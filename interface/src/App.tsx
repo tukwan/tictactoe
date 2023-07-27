@@ -1,35 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react"
 
-function App() {
-  const [count, setCount] = useState(0)
+import { socket } from "./socket"
+
+export function App() {
+  const [msg, setMsg] = useState("")
+
+  useEffect(() => {
+    const onConnect = () => {
+      console.log("onConnect")
+    }
+
+    const onDisconnect = () => {
+      console.log("onDisconnect")
+    }
+
+    const onMessageEvent = (msg: string) => {
+      console.log("onMessageEvent", msg)
+    }
+
+    socket.on("connect", onConnect)
+    socket.on("disconnect", onDisconnect)
+    socket.on("message", onMessageEvent)
+
+    return () => {
+      socket.off("connect", onConnect)
+      socket.off("disconnect", onDisconnect)
+      socket.off("message", onMessageEvent)
+      // socket.disconnect()
+    }
+  }, [])
+
+  function onSubmit(event: any) {
+    event.preventDefault()
+
+    socket.emit("message", msg)
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <form onSubmit={onSubmit}>
+      <input onChange={(e) => setMsg(e.target.value)} />
+      <button type="submit">Send</button>
+    </form>
   )
 }
-
-export default App
