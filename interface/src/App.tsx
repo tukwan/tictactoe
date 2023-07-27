@@ -37,9 +37,20 @@ export function App() {
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      <input onChange={(e) => setMsg(e.target.value)} />
-      <button type="submit">Send</button>
-    </form>
+    <>
+      <h1 className="text-3xl font-bold underline">TicTacToe</h1>
+      <form className="mt-4" onSubmit={onSubmit}>
+        <input
+          className="border border-gray-300 rounded-lg px-4 py-2"
+          onChange={(e) => setMsg(e.target.value)}
+        />
+        <button
+          className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
+          type="submit"
+        >
+          Send
+        </button>
+      </form>
+    </>
   )
 }
