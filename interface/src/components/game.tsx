@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
 import gameService from "../services/game-service"
-import mainService from "../services/main-service"
+import mainService from "../services/socket-service"
 
 export function Game() {
   const [isGameStarted, setGameStarted] = useState(false)
@@ -10,9 +10,9 @@ export function Game() {
 
   useEffect(() => {
     gameService.start(mainService.socket, (startConfig) => {
-      // console.log("startConfig", startConfig)
+      console.log("startConfig", startConfig)
       setGameStarted(true)
-      setPlayerTurn(startConfig.start)
+      setPlayerTurn(startConfig.firstMove)
     })
 
     gameService.onReceivedUpdate(mainService.socket, (matrix: string) => {
@@ -42,21 +42,29 @@ export function Game() {
       <h1>
         {isGameStarted ? "Game is on." : "Waiting for other players to join."}
       </h1>
-      <h1>Your turn: {isPlayerTurn ? "yes" : "no"}</h1>
-      <form className="mt-4" onSubmit={onSubmit}>
-        <label>Matrix:</label>
-        <input
-          className="border border-gray-300 rounded-lg px-4 py-2"
-          onChange={onMatrixChange}
-          value={matrix}
-        />
-        <button
-          className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
-          type="submit"
-        >
-          Send
-        </button>
-      </form>
+      {isGameStarted && (
+        <>
+          <h1>Your turn: {isPlayerTurn ? "yes" : "no"}</h1>
+
+          <form className="mt-4" onSubmit={onSubmit}>
+            <label>Matrix:</label>
+            <input
+              className="border border-gray-300 rounded-lg px-4 py-2"
+              onChange={onMatrixChange}
+              value={matrix}
+            />
+            <button
+              className={`ml-2 px-4 py-2 rounded-lg text-white ${
+                !isPlayerTurn ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500"
+              }`}
+              type="submit"
+              disabled={!isPlayerTurn}
+            >
+              Send
+            </button>
+          </form>
+        </>
+      )}
     </>
   )
 }

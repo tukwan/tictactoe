@@ -1,7 +1,7 @@
 import { io, Socket } from "socket.io-client"
 import { DefaultEventsMap } from "@socket.io/component-emitter"
 
-class MainService {
+class SocketService {
   public socket: Socket | null = null
 
   public connect(
@@ -24,4 +24,4 @@ class MainService {
   }
 }
 
-export default new MainService()
+export default new SocketService()

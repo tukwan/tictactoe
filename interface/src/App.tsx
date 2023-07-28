@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import mainService from "./services/main-service"
+import mainService from "./services/socket-service"
 import { Room } from "./components/room"
 import { Game } from "./components/game"
 

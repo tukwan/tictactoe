@@ -1,11 +1,20 @@
 import { Socket } from "socket.io-client"
 
 interface StartConfig {
-  start: boolean
+  firstMove: boolean
   symbol: "x" | "o"
 }
 
 class GameService {
+  public async joinRoom(socket: Socket, roomId: string): Promise<boolean> {
+    return new Promise((rs, rj) => {
+      socket.emit("room_join", roomId)
+
+      socket.on("room_joined", () => rs(true))
+      socket.on("room_error", (error) => rj(error))
+    })
+  }
+
   public async start(
     socket: Socket,
     callback: (startConfig: StartConfig) => void
