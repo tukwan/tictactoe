@@ -6,6 +6,7 @@ import { Server, Socket } from "socket.io"
 
 import { MainController } from "./controllers/main-controller"
 import { RoomController } from "./controllers/room-controller"
+import { GameController } from "./controllers/game-controller"
 
 const app = express()
 app.use(cors())
@@ -22,6 +23,7 @@ export const io = new Server(server, {
 io.on("connection", (socket: Socket) => {
   MainController(socket)
   RoomController(socket)
+  GameController(socket)
 })
 
 server.listen(3000, () => {

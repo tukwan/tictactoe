@@ -24,9 +24,9 @@ export function RoomController(socket: Socket) {
       console.log("room_joined")
 
       if (io.sockets.adapter.rooms.get(roomId)?.size === 2) {
-        socket.emit("start_game")
+        socket.emit("start_game", { firstMove: true, symbol: "x" })
+        socket.to(roomId).emit("start_game", { firstMove: false, symbol: "o" })
         console.log("start_game")
-        // socket.to(roomId).emit("start_game", '')
       }
     }
   })
