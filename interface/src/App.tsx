@@ -1,64 +1,31 @@
 import { useEffect, useState } from "react"
 
-import { socket } from "./socket"
+import mainService from "./services/main-service"
+import { Room } from "./components/room"
+import { Game } from "./components/game"
+
+const SOCKET_ENDPOINT = "http://localhost:3000"
 
 export function App() {
-  const [roomId, setRoomId] = useState("")
+  const [isPlayer, setIsPlayer] = useState(false)
 
   useEffect(() => {
-    const onConnect = () => {
-      console.log("onConnect")
+    const connectSocket = async () => {
+      try {
+        await mainService.connect(SOCKET_ENDPOINT)
+        console.log("connected")
+      } catch (error) {
+        console.log("Error mainService: ", error)
+      }
     }
 
-    const onDisconnect = () => {
-      console.log("onDisconnect")
-    }
-
-    const onMessageEvent = (msg: string) => {
-      console.log("onMessageEvent", msg)
-    }
-
-    socket.on("connect", onConnect)
-    socket.on("disconnect", onDisconnect)
-    socket.on("message", onMessageEvent)
-
-    return () => {
-      socket.off("connect", onConnect)
-      socket.off("disconnect", onDisconnect)
-      socket.off("message", onMessageEvent)
-      // socket.disconnect()
-    }
+    connectSocket()
   }, [])
-
-  const onRoomIdChange = (e: React.ChangeEvent<any>) => {
-    const value = e.target.value
-    setRoomId(value)
-  }
-
-  const joinRoom = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!roomId || roomId.trim() === "" || !socket) return
-
-    socket.emit("join_room", roomId)
-  }
 
   return (
     <>
-      <h1 className="text-3xl font-bold underline">TicTacToe</h1>
-      <form className="mt-4" onSubmit={joinRoom}>
-        <label>Join a room</label>
-        <input
-          className="border border-gray-300 rounded-lg px-4 py-2"
-          onChange={onRoomIdChange}
-        />
-        <button
-          className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
-          type="submit"
-        >
-          Send
-        </button>
-      </form>
+      <h1>Tic Tac Toe</h1>
+      {isPlayer ? <Game /> : <Room setIsPlayer={setIsPlayer} />}
     </>
   )
 }

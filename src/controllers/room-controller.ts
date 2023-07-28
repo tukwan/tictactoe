@@ -3,7 +3,7 @@ import { Socket } from "socket.io"
 import { io } from "../index"
 
 export function RoomController(socket: Socket) {
-  socket.on("join_room", (roomId: string) => {
+  socket.on("room_join", (roomId: string) => {
     console.log("New User joining room: ", roomId)
 
     const connectedSockets = io.sockets.adapter.rooms.get(roomId)
@@ -16,7 +16,7 @@ export function RoomController(socket: Socket) {
       socketRooms.length > 0 ||
       (connectedSockets && connectedSockets.size === 2)
     ) {
-      socket.emit("error", "Room is full")
+      socket.emit("room_error", "Room is full")
       console.log("Error: ", "Room is full")
     } else {
       socket.join(roomId)
