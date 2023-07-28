@@ -29,6 +29,14 @@ class GameService {
   public async onReceivedUpdate(socket: Socket, callback: (matrix) => void) {
     socket.on("on_received_update_game", (matrix) => callback(matrix))
   }
+
+  public async win(socket: Socket, msg: string) {
+    socket.emit("win_game", msg)
+  }
+
+  public async onReceivedWin(socket: Socket, callback: (msg) => void) {
+    socket.on("on_received_win_game", (msg) => callback(msg))
+  }
 }
 
 export default new GameService()

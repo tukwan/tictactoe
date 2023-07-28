@@ -39,4 +39,12 @@ export function GameController(socket: Socket) {
     socket.to(socketRooms[0]).emit("on_received_update_game", matrix)
     console.log("S_update_game", matrix)
   })
+
+  socket.on("win_game", (msg: string) => {
+    const socketRooms = Array.from(socket.rooms.values()).filter(
+      (roomId) => roomId !== socket.id
+    )
+
+    socket.to(socketRooms[0]).emit("on_received_win_game", msg)
+  })
 }

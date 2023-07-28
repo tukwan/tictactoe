@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
 import gameService from "../services/game-service"
-import mainService from "../services/socket-service"
+import socketService from "../services/socket-service"
 
 export function Game() {
   const [isGameStarted, setGameStarted] = useState(false)
@@ -9,20 +9,32 @@ export function Game() {
   const [matrix, setMatrix] = useState("")
 
   useEffect(() => {
-    gameService.start(mainService.socket, (startConfig) => {
+    gameService.start(socketService.socket, (startConfig) => {
       console.log("startConfig", startConfig)
       setGameStarted(true)
       setPlayerTurn(startConfig.firstMove)
     })
 
-    gameService.onReceivedUpdate(mainService.socket, (matrix: string) => {
+    gameService.onReceivedUpdate(socketService.socket, (matrix: string) => {
       console.log("R_onReceivedUpdate:", matrix)
       setPlayerTurn(true)
+    })
+
+    gameService.onReceivedWin(socketService.socket, (msg: string) => {
+      console.log("R_onReceivedWin:", msg)
+      alert(msg)
+      setPlayerTurn(false)
     })
   }, [])
 
   const updateGameMatrix = (matrix: string) => {
-    gameService.update(mainService.socket, matrix)
+    gameService.update(socketService.socket, matrix)
+
+    if (matrix === "0") {
+      gameService.win(socketService.socket, "You lost!")
+      alert("You won!")
+    }
+
     setPlayerTurn(false)
   }
 

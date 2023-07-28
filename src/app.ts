@@ -7,7 +7,7 @@ import { Server, Socket } from "socket.io"
 import { SocketController } from "./controllers/socket-controller"
 import { GameController } from "./controllers/game-controller"
 
-const CLIENT_APP_URL = "http://localhost:5173"
+const CLIENT_APP_URL = "http://localhost:4173"
 const PORT = 3000
 
 const app = express()
