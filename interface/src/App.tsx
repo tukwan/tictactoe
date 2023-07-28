@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { socket } from "./socket"
 
 export function App() {
-  const [msg, setMsg] = useState("")
+  const [roomId, setRoomId] = useState("")
 
   useEffect(() => {
     const onConnect = () => {
@@ -30,19 +30,27 @@ export function App() {
     }
   }, [])
 
-  function onSubmit(event: any) {
-    event.preventDefault()
+  const onRoomIdChange = (e: React.ChangeEvent<any>) => {
+    const value = e.target.value
+    setRoomId(value)
+  }
 
-    socket.emit("message", msg)
+  const joinRoom = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!roomId || roomId.trim() === "" || !socket) return
+
+    socket.emit("join_room", roomId)
   }
 
   return (
     <>
       <h1 className="text-3xl font-bold underline">TicTacToe</h1>
-      <form className="mt-4" onSubmit={onSubmit}>
+      <form className="mt-4" onSubmit={joinRoom}>
+        <label>Join a room</label>
         <input
           className="border border-gray-300 rounded-lg px-4 py-2"
-          onChange={(e) => setMsg(e.target.value)}
+          onChange={onRoomIdChange}
         />
         <button
           className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
