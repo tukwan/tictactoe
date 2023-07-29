@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node dist/app.js",
-    "build": "npx tsc",
-    "dev": "nodemon src/app.ts"
+    "dev": "nodemon src/app.ts",
+    "start": "PORT=10000 node dist/app.js",
+    "build": "tsc",
+    "build:interface": "cd ./interface && npm install && npm run build",
+    "build:prod": "npm install && npm run build && npm run build:interface"
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "~4.16.1",
     "socket.io": "^4.7.1"
   },

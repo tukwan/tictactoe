@@ -1,11 +1,6 @@
 import { Socket } from "socket.io-client"
 
-import { Matrix } from "../components/game"
-
-interface StartConfig {
-  firstMove: boolean
-  playerSymbol: "x" | "o"
-}
+import { Matrix, StartConfig } from "../lib/types"
 
 class GameService {
   public async joinRoom(socket: Socket, roomId: string): Promise<boolean> {

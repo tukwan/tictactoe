@@ -1,5 +1,4 @@
-type PlayerSymbol = "x" | "o" | null
-type Matrix = Array<Array<PlayerSymbol>>
+import type { Matrix, PlayerSymbol } from "../lib/types"
 
 export const checkWinning = (matrix: Matrix, playerSymbol: PlayerSymbol) => {
   // Check Rows & Columns

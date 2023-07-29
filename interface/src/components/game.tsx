@@ -4,10 +4,8 @@ import gameService from "../services/game-service"
 import socketService from "../services/socket-service"
 import { cn } from "../lib/utils"
 import { checkWinning } from "../lib/winner"
+import type { Matrix, PlayerSymbol } from "../lib/types"
 import { Board, BoardRow, BoardCell } from "./board"
-
-type PlayerSymbol = "x" | "o" | null
-export type Matrix = Array<Array<PlayerSymbol>>
 
 export function Game() {
   const [isGameStarted, setGameStarted] = useState(false)
@@ -32,7 +30,6 @@ export function Game() {
     })
 
     gameService.onReceivedWin(socketService.socket, (msg: string) => {
-      console.log("R_onReceivedWin:", msg)
       alert(msg)
       setPlayerTurn(false)
     })

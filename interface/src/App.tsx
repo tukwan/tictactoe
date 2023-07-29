@@ -4,16 +4,17 @@ import mainService from "./services/socket-service"
 import { Room } from "./components/room"
 import { Game } from "./components/game"
 import { Layout } from "./components/layout"
-
-const SOCKET_ENDPOINT = "http://localhost:3000"
+import { SOCKET_URL } from "./lib/config"
 
 export function App() {
   const [isPlayer, setIsPlayer] = useState(false)
 
   useEffect(() => {
+    console.log("config", SOCKET_URL)
+
     const connectSocket = async () => {
       try {
-        await mainService.connect(SOCKET_ENDPOINT)
+        await mainService.connect(SOCKET_URL)
         console.log("connected")
       } catch (error) {
         console.log("Error mainService: ", error)
