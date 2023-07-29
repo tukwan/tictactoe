@@ -2,12 +2,16 @@ import { useEffect, useState } from "react"
 
 import gameService from "../services/game-service"
 import socketService from "../services/socket-service"
-import { Board, board } from "./board"
+import { Board, BoardRow, BoardCell } from "./board"
 
 export function Game() {
   const [isGameStarted, setGameStarted] = useState(false)
   const [isPlayerTurn, setPlayerTurn] = useState(false)
-  const [matrix, setMatrix] = useState("")
+  const [matrix, setMatrix] = useState([
+    ["X", "O", "X"],
+    ["O", "X", "O"],
+    ["X", "O", "X"],
+  ])
 
   useEffect(() => {
     gameService.start(socketService.socket, (startConfig) => {
@@ -76,7 +80,17 @@ export function Game() {
               Send
             </button>
           </form>
-          <Board board={board} />
+          <Board>
+            {matrix.map((row, rowIndex) => (
+              <BoardRow key={rowIndex}>
+                {row.map((value, cellIndex) => (
+                  <BoardCell key={cellIndex} onClick={() => alert("yo")}>
+                    {value}
+                  </BoardCell>
+                ))}
+              </BoardRow>
+            ))}
+          </Board>
         </>
       )}
     </>
