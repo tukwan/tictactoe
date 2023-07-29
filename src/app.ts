@@ -7,7 +7,7 @@ import { Server, Socket } from "socket.io"
 import { SocketController } from "./controllers/socket-controller"
 import { GameController } from "./controllers/game-controller"
 
-const PORT_SERVER = 3000
+const PORT_SERVER = process.env.PORT || 3000
 const PORT_CLIENT = 5173
 const CLIENT_URL = `http://localhost:${PORT_CLIENT}`
 
