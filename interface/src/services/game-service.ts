@@ -1,8 +1,10 @@
 import { Socket } from "socket.io-client"
 
+import { Matrix } from "../components/game"
+
 interface StartConfig {
   firstMove: boolean
-  symbol: "x" | "o"
+  playerSymbol: "x" | "o"
 }
 
 class GameService {
@@ -22,11 +24,14 @@ class GameService {
     socket.on("start_game", callback)
   }
 
-  public async update(socket: Socket, matrix: string) {
+  public async update(socket: Socket, matrix: Matrix) {
     socket.emit("update_game", matrix)
   }
 
-  public async onReceivedUpdate(socket: Socket, callback: (matrix) => void) {
+  public async onReceivedUpdate(
+    socket: Socket,
+    callback: (matrix: Matrix) => void
+  ) {
     socket.on("on_received_update_game", (matrix) => callback(matrix))
   }
 
