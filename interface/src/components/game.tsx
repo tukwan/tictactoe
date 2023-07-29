@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import gameService from "../services/game-service"
 import socketService from "../services/socket-service"
 import { cn } from "../lib/utils"
+import { checkWinning } from "../lib/winner"
 import { Board, BoardRow, BoardCell } from "./board"
 
 type PlayerSymbol = "x" | "o" | null
@@ -27,7 +28,6 @@ export function Game() {
 
     gameService.onReceivedUpdate(socketService.socket, (newMatrix) => {
       setMatrix(newMatrix)
-      // check if win
       setPlayerTurn(true)
     })
 
@@ -40,19 +40,27 @@ export function Game() {
 
   const updateGameMatrix = (column: number, row: number) => {
     if (!isPlayerTurn) return
+    const newMatrix = [...matrix]
 
     if (matrix[column][row] === null) {
-      const newMatrix = [...matrix]
       newMatrix[column][row] = playerSymbol
       setMatrix(newMatrix)
     }
 
-    gameService.update(socketService.socket, matrix)
+    gameService.update(socketService.socket, newMatrix)
 
-    // if (matrix === "0") {
-    //   gameService.win(socketService.socket, "You lost!")
-    //   alert("You won!")
-    // }
+    const [currentPlayerWon, otherPlayerWon] = checkWinning(
+      newMatrix,
+      playerSymbol
+    )
+
+    if (currentPlayerWon && otherPlayerWon) {
+      gameService.win(socketService.socket, "The Game is a TIE!")
+      alert("The Game is a TIE!")
+    } else if (currentPlayerWon && !otherPlayerWon) {
+      gameService.win(socketService.socket, "You Lost!")
+      alert("You Won!")
+    }
 
     setPlayerTurn(false)
   }

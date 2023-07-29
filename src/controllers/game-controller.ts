@@ -24,8 +24,10 @@ export function GameController(socket: Socket) {
       console.log("room_joined")
 
       if (io.sockets.adapter.rooms.get(roomId)?.size === 2) {
-        socket.emit("start_game", { firstMove: true, symbol: "x" })
-        socket.to(roomId).emit("start_game", { firstMove: false, symbol: "o" })
+        socket.emit("start_game", { firstMove: true, playerSymbol: "x" })
+        socket
+          .to(roomId)
+          .emit("start_game", { firstMove: false, playerSymbol: "o" })
         console.log("start_game")
       }
     }
@@ -37,7 +39,6 @@ export function GameController(socket: Socket) {
     )
 
     socket.to(socketRooms[0]).emit("on_received_update_game", matrix)
-    console.log("S_update_game", matrix)
   })
 
   socket.on("win_game", (msg: string) => {
