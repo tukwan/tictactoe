@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 
 import gameService from "../services/game-service"
 import socketService from "../services/socket-service"
+import { Board, board } from "./board"
 
 export function Game() {
   const [isGameStarted, setGameStarted] = useState(false)
@@ -75,6 +76,7 @@ export function Game() {
               Send
             </button>
           </form>
+          <Board board={board} />
         </>
       )}
     </>
