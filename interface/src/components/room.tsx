@@ -31,21 +31,21 @@ export function Room({ setIsPlayer }: RoomProps) {
   }
 
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">TicTacToe</h1>
-      <form className="mt-4" onSubmit={joinRoom}>
-        <label>Join a room</label>
-        <input
-          className="border border-gray-300 rounded-lg px-4 py-2"
-          onChange={onRoomIdChange}
-        />
-        <button
-          className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
-          type="submit"
-        >
-          Send
-        </button>
-      </form>
-    </>
+    <form className="mt-4" onSubmit={joinRoom}>
+      <input
+        type="text"
+        name="room"
+        id="room"
+        className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-600"
+        onChange={onRoomIdChange}
+        placeholder="Room id..."
+      />
+      <button
+        className="ml-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-900 transition duration-200"
+        type="submit"
+      >
+        Join
+      </button>
+    </form>
   )
 }

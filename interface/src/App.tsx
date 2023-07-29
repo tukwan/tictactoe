@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import mainService from "./services/socket-service"
 import { Room } from "./components/room"
 import { Game } from "./components/game"
+import { Layout } from "./components/layout"
 
 const SOCKET_ENDPOINT = "http://localhost:3000"
 
@@ -23,9 +24,6 @@ export function App() {
   }, [])
 
   return (
-    <>
-      <h1>Tic Tac Toe</h1>
-      {isPlayer ? <Game /> : <Room setIsPlayer={setIsPlayer} />}
-    </>
+    <Layout>{isPlayer ? <Game /> : <Room setIsPlayer={setIsPlayer} />}</Layout>
   )
 }
