@@ -1,4 +1,4 @@
 const isProd = import.meta.env.MODE === "production"
-const socketProd = import.meta.env.VITE_SOCKET_PROD
-const socketDev = import.meta.env.VITE_SOCKET_DEV
+const socketProd = window.location.origin
+const socketDev = "http://localhost:3000"
 export const SOCKET_URL = isProd ? socketProd : socketDev
