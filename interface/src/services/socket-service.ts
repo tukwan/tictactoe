@@ -13,7 +13,7 @@ class SocketService {
       if (!this.socket) return rj()
 
       this.socket.on("connect", () => {
-        rs(this.socket)
+        rs(this.socket!)
       })
 
       this.socket.on("connect_error", (err) => {

@@ -1,5 +1,5 @@
 import { render, fireEvent } from "@testing-library/react"
-import { vi, expect } from "vitest"
+import { vi, expect, Mock } from "vitest"
 import { act } from "react-dom/test-utils"
 import matchers from "@testing-library/jest-dom/matchers"
 
@@ -13,7 +13,7 @@ const mockSetIsPlayer = vi.fn()
 
 describe("Room", () => {
   beforeEach(() => {
-    socketService.socket = "socket"
+    socketService.socket = "socket" as any
     gameService.joinRoom = vi.fn()
   })
 
@@ -35,7 +35,7 @@ describe("Room", () => {
   })
 
   it("should call joinRoom when form is submitted with room id", async () => {
-    gameService.joinRoom.mockResolvedValueOnce(true)
+    (gameService.joinRoom as Mock).mockResolvedValueOnce(true)
 
     const { getByText, getByPlaceholderText } = render(
       <Room setIsPlayer={mockSetIsPlayer} />

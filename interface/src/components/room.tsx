@@ -23,7 +23,6 @@ export function Room({ setIsPlayer }: RoomProps) {
 
     try {
       const joined = await gameService.joinRoom(socket, roomId)
-      console.log("room_joined:", joined)
       if (joined) setIsPlayer(true)
     } catch (error) {
       console.log("Error gameService:", error)

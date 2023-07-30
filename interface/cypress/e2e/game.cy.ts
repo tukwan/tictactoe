@@ -11,6 +11,7 @@ describe("Game", () => {
 
   it("should allow typing in the room id input", () => {
     const roomId = "room-id-1"
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.get("#room").type(roomId).should("have.value", roomId)
   })
 })

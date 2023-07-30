@@ -4,6 +4,6 @@ export default defineConfig({
   video: false,
   e2e: {
     // eslint-disable-next-line
-    setupNodeEvents(on, config) {},
+    setupNodeEvents(_on, _config) {},
   },
 })

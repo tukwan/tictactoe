@@ -9,6 +9,7 @@ import { Board, BoardRow, BoardCell } from "./board"
 
 export function Game() {
   const [isGameStarted, setGameStarted] = useState(false)
+  const [endGameMsg, setEndGameMsg] = useState("")
   const [playerSymbol, setPlayerSymbol] = useState<PlayerSymbol>(null)
   const [isPlayerTurn, setPlayerTurn] = useState(false)
   const [matrix, setMatrix] = useState<Matrix>([
@@ -30,20 +31,19 @@ export function Game() {
     })
 
     gameService.onReceivedWin(socketService.socket, (msg: string) => {
-      alert(msg)
       setPlayerTurn(false)
+      setEndGameMsg(msg)
     })
   }, [])
 
   const updateGameMatrix = (column: number, row: number) => {
     if (!isPlayerTurn) return
+
+    if (matrix[column][row] !== null) return
+
     const newMatrix = [...matrix]
-
-    if (matrix[column][row] === null) {
-      newMatrix[column][row] = playerSymbol
-      setMatrix(newMatrix)
-    }
-
+    newMatrix[column][row] = playerSymbol
+    setMatrix(newMatrix)
     gameService.update(socketService.socket, newMatrix)
 
     const [currentPlayerWon, otherPlayerWon] = checkWinning(
@@ -52,11 +52,11 @@ export function Game() {
     )
 
     if (currentPlayerWon && otherPlayerWon) {
-      gameService.win(socketService.socket, "The Game is a TIE!")
-      alert("The Game is a TIE!")
+      gameService.win(socketService.socket, "Is a TIE!!")
+      setEndGameMsg("Is a TIE!")
     } else if (currentPlayerWon && !otherPlayerWon) {
       gameService.win(socketService.socket, "You Lost!")
-      alert("You Won!")
+      setEndGameMsg("You Won!")
     }
 
     setPlayerTurn(false)
@@ -64,13 +64,27 @@ export function Game() {
 
   return (
     <>
-      <h1>
-        {isGameStarted ? "Game is on." : "Waiting for other players to join."}
-      </h1>
-      {isGameStarted && (
+      {isGameStarted ? (
         <>
-          <h1>Your turn: {isPlayerTurn ? "yes" : "no"}</h1>
-          <h1>Your symbol: {playerSymbol}</h1>
+          <div className="mt-2 mb-3">
+            <div className="text-md font-normal text-indigo-600">
+              You:{" "}
+              <span className="uppercase font-bold text-2xl">
+                {playerSymbol}
+              </span>
+            </div>
+            <div className="text-lg font-bold animate-pulse">
+              {endGameMsg ? (
+                <span className="text-indigo-600  text-3xl">{endGameMsg}</span>
+              ) : (
+                <span
+                  className={isPlayerTurn ? "text-green-600" : "text-red-600"}
+                >
+                  {isPlayerTurn ? "Your turn..." : "Other player turn..."}
+                </span>
+              )}
+            </div>
+          </div>
           <Board>
             {matrix.map((row, rowIndex) => (
               <BoardRow key={rowIndex}>
@@ -89,7 +103,18 @@ export function Game() {
             ))}
           </Board>
         </>
+      ) : (
+        <GameLoading />
       )}
     </>
   )
 }
+
+const GameLoading = () => (
+  <>
+    <div className="w-10 h-10 m-4 border-t-4 border-indigo-600 border-solid rounded-full animate-spin"></div>
+    <p className="text-md leading-8 text-gray-500 animate-pulse">
+      Waiting for second player to join...
+    </p>
+  </>
+)

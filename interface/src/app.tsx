@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 
+import { SOCKET_URL } from "./lib/config"
 import mainService from "./services/socket-service"
 import { Room } from "./components/room"
 import { Game } from "./components/game"
 import { Layout } from "./components/layout"
-import { SOCKET_URL } from "./lib/config"
 
 export function App() {
   const [isPlayer, setIsPlayer] = useState(false)
