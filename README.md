@@ -6,6 +6,8 @@ A real-time, multiplayer Tic Tac Toe game built using Node.js for the server-sid
 
 You can play the game online at [https://tic-tac-toe-09qb.onrender.com](https://tic-tac-toe-09qb.onrender.com) .
 
+https://github.com/tukwan/tictactoe/assets/7630720/f21a21ee-4307-4f97-862b-1e1b8f8ce346
+
 ## Features
 
 - Interactive multiplayer gameplay in real-time.
