@@ -1,7 +1,6 @@
 import { Socket } from "socket.io-client"
-import { toast } from "react-toastify"
 
-import { Matrix, StartConfig } from "../lib/types"
+import { GameState, StartConfig } from "../lib/types"
 
 export class GameService {
   private socket: Socket | null = null
@@ -13,16 +12,8 @@ export class GameService {
   async joinRoom(roomId: string): Promise<boolean> {
     return new Promise((rs, rj) => {
       this.socket?.emit("room_join", roomId)
-
-      this.socket?.on("room_joined", () => {
-        toast.success(`You joined Room: ${roomId}`)
-        return rs(true)
-      })
-      this.socket?.on("room_error", (error) => {
-        toast.error(`Error joining a Room: ${roomId}`)
-        toast.error(`${error}`)
-        rj(error)
-      })
+      this.socket?.on("room_joined", () => rs(true))
+      this.socket?.on("room_error", (error) => rj(error))
     })
   }
 
@@ -30,12 +21,14 @@ export class GameService {
     this.socket?.on("start_game", callback)
   }
 
-  async update(matrix: Matrix) {
-    this.socket?.emit("update_game", matrix)
+  async update(gameState: GameState) {
+    this.socket?.emit("update_game", gameState)
   }
 
-  async onReceivedUpdate(callback: (matrix: Matrix) => void) {
-    this.socket?.on("on_received_update_game", (matrix) => callback(matrix))
+  async onReceivedUpdate(callback: (gameState: GameState) => void) {
+    this.socket?.on("on_received_update_game", (gameState) =>
+      callback(gameState)
+    )
   }
 
   async win(msg: string) {

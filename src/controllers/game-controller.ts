@@ -2,6 +2,12 @@ import { Socket } from "socket.io"
 
 import { io } from "../app"
 
+type PlayerSymbol = "x" | "o" | null
+type StartConfig = {
+  firstMove: boolean
+  playerSymbol: PlayerSymbol
+}
+
 export function GameController(socket: Socket) {
   const getSocketRooms = (): string[] =>
     Array.from(socket.rooms.values()).filter((roomId) => roomId !== socket.id)
@@ -20,17 +26,23 @@ export function GameController(socket: Socket) {
       socket.emit("room_joined")
 
       if (io.sockets.adapter.rooms.get(roomId)?.size === 2) {
-        socket.emit("start_game", { firstMove: true, playerSymbol: "x" })
+        socket.emit("start_game", {
+          firstMove: true,
+          playerSymbol: "x",
+        } as StartConfig)
         socket
           .to(roomId)
-          .emit("start_game", { firstMove: false, playerSymbol: "o" })
+          .emit("start_game", {
+            firstMove: false,
+            playerSymbol: "o",
+          } as StartConfig)
       }
     }
   })
 
-  socket.on("update_game", (matrix: string) => {
+  socket.on("update_game", (gameState: string) => {
     const socketRooms = getSocketRooms()
-    socket.to(socketRooms[0]).emit("on_received_update_game", matrix)
+    socket.to(socketRooms[0]).emit("on_received_update_game", gameState)
   })
 
   socket.on("win_game", (msg: string) => {

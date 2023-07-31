@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { toast } from "react-toastify"
 
 import gameService from "../services/game-service"
 
@@ -22,8 +23,10 @@ export function Room({ setIsPlayer }: RoomProps) {
     try {
       const joined = await gameService.joinRoom(roomId)
       if (joined) setIsPlayer(true)
+      toast.success(`You joined Room: ${roomId}`)
     } catch (error) {
-      console.log("Error gameService:", error)
+      toast.error(`Error joining a Room: ${roomId}`)
+      toast.error(`${error}`)
     }
   }
 

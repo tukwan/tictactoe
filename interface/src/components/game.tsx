@@ -4,7 +4,7 @@ import { toast } from "react-toastify"
 import gameService from "../services/game-service"
 import { cn } from "../lib/utils"
 import { checkWinning } from "../lib/winner"
-import type { Matrix, PlayerSymbol } from "../lib/types"
+import type { GameState, PlayerSymbol } from "../lib/types"
 import { Board, BoardRow, BoardCell } from "./board"
 
 export function Game() {
@@ -12,7 +12,7 @@ export function Game() {
   const [endGameMsg, setEndGameMsg] = useState("")
   const [playerSymbol, setPlayerSymbol] = useState<PlayerSymbol>(null)
   const [isPlayerTurn, setPlayerTurn] = useState(false)
-  const [matrix, setMatrix] = useState<Matrix>([
+  const [gameState, setMatrix] = useState<GameState>([
     [null, null, null],
     [null, null, null],
     [null, null, null],
@@ -25,8 +25,8 @@ export function Game() {
       setPlayerTurn(startConfig.firstMove)
     })
 
-    gameService.onReceivedUpdate((newMatrix) => {
-      setMatrix(newMatrix)
+    gameService.onReceivedUpdate((newGameState) => {
+      setMatrix(newGameState)
       setPlayerTurn(true)
     })
 
@@ -45,21 +45,21 @@ export function Game() {
   const updateGameMatrix = (column: number, row: number) => {
     if (!isPlayerTurn) return
 
-    if (matrix[column][row] !== null) return
+    if (gameState[column][row] !== null) return
 
-    const newMatrix = [...matrix]
-    newMatrix[column][row] = playerSymbol
-    setMatrix(newMatrix)
-    gameService.update(newMatrix)
+    const newGameState = [...gameState]
+    newGameState[column][row] = playerSymbol
+    setMatrix(newGameState)
+    gameService.update(newGameState)
 
     const [currentPlayerWon, otherPlayerWon] = checkWinning(
-      newMatrix,
+      newGameState,
       playerSymbol
     )
 
     if (currentPlayerWon && otherPlayerWon) {
-      gameService.win("Is a TIE! 🤝")
-      setEndGameMsg("Is a TIE! 🤝")
+      gameService.win("TIE! 🤝")
+      setEndGameMsg("TIE! 🤝")
     } else if (currentPlayerWon && !otherPlayerWon) {
       gameService.win("You Lost! 😿")
       setEndGameMsg("You Won! 🥳")
@@ -78,7 +78,7 @@ export function Game() {
         endGameMsg={endGameMsg}
       />
       <Board>
-        {matrix.map((row, rowIndex) => (
+        {gameState.map((row, rowIndex) => (
           <BoardRow key={rowIndex}>
             {row.map((symbol: PlayerSymbol, cellIndex) => (
               <BoardCell

@@ -1,21 +1,21 @@
-import type { Matrix, PlayerSymbol } from "../lib/types"
+import type { GameState, PlayerSymbol } from "../lib/types"
 
-export const checkWinning = (matrix: Matrix, playerSymbol: PlayerSymbol) => {
+export const checkWinning = (gameState: GameState, playerSymbol: PlayerSymbol) => {
   // Check Rows & Columns
   for (let i = 0; i < 3; i++) {
-    if (checkAllSame(matrix[i], playerSymbol)) return [true, false]
-    if (checkAllSame([matrix[0][i], matrix[1][i], matrix[2][i]], playerSymbol))
+    if (checkAllSame(gameState[i], playerSymbol)) return [true, false]
+    if (checkAllSame([gameState[0][i], gameState[1][i], gameState[2][i]], playerSymbol))
       return [true, false]
   }
 
   // Check Diagonals
-  if (checkAllSame([matrix[0][0], matrix[1][1], matrix[2][2]], playerSymbol))
+  if (checkAllSame([gameState[0][0], gameState[1][1], gameState[2][2]], playerSymbol))
     return [true, false]
-  if (checkAllSame([matrix[2][0], matrix[1][1], matrix[0][2]], playerSymbol))
+  if (checkAllSame([gameState[2][0], gameState[1][1], gameState[0][2]], playerSymbol))
     return [true, false]
 
   // Check for a Tie
-  if (matrix.every((m) => m.every((v) => v !== null))) {
+  if (gameState.every((m) => m.every((v) => v !== null))) {
     return [true, true]
   }
 

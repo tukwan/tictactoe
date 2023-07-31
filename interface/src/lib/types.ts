@@ -1,6 +1,6 @@
 export type PlayerSymbol = "x" | "o" | null
 
-export type Matrix = Array<Array<PlayerSymbol>>
+export type GameState = Array<Array<PlayerSymbol>>
 
 export type StartConfig = {
   firstMove: boolean
