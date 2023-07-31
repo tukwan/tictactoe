@@ -18,16 +18,14 @@ describe("Room", () => {
   })
 
   it("renders correctly", () => {
-    const { getByPlaceholderText, getByText } = render(
-      <Room setIsPlayer={mockSetIsPlayer} />
-    )
+    const { getByPlaceholderText, getByText } = render(<Room />)
 
     expect(getByPlaceholderText("Room id...")).toBeInTheDocument()
     expect(getByText("Join")).toBeInTheDocument()
   })
 
   it("should not call joinRoom when form is submitted with empty input", async () => {
-    const { getByText } = render(<Room setIsPlayer={mockSetIsPlayer} />)
+    const { getByText } = render(<Room />)
 
     fireEvent.click(getByText("Join"))
 
@@ -37,9 +35,7 @@ describe("Room", () => {
   it("should call joinRoom when form is submitted with room id", async () => {
     (gameService.joinRoom as Mock).mockResolvedValueOnce(true)
 
-    const { getByText, getByPlaceholderText } = render(
-      <Room setIsPlayer={mockSetIsPlayer} />
-    )
+    const { getByText, getByPlaceholderText } = render(<Room />)
 
     fireEvent.change(getByPlaceholderText("Room id..."), {
       target: { value: "room-id-1" },

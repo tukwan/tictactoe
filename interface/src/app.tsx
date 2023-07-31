@@ -4,19 +4,26 @@ import "react-toastify/dist/ReactToastify.css"
 
 import { SOCKET_URL } from "./lib/config"
 import { useSocket } from "./hooks/useSocket"
+import { Layout } from "./components/layout"
 import { Room } from "./components/room"
 import { Game } from "./components/game"
-import { Layout } from "./components/layout"
 
 export function App() {
-  const [isPlayer, setIsPlayer] = useState(false)
-
-  useSocket(SOCKET_URL)
+  const [isGameStarted, setGameStarted] = useState(false)
+  const { isConnected } = useSocket(SOCKET_URL)
 
   return (
     <>
       <Layout>
-        {isPlayer ? <Game /> : <Room setIsPlayer={setIsPlayer} />}
+        {isConnected && (
+          <>
+            {!isGameStarted && <Room />}
+            <Game
+              setGameStarted={setGameStarted}
+              isGameStarted={isGameStarted}
+            />
+          </>
+        )}
       </Layout>
       <ToastContainer />
     </>

@@ -30,12 +30,11 @@ export function GameController(socket: Socket) {
           firstMove: true,
           playerSymbol: "x",
         } as StartConfig)
-        socket
-          .to(roomId)
-          .emit("start_game", {
-            firstMove: false,
-            playerSymbol: "o",
-          } as StartConfig)
+
+        socket.to(roomId).emit("start_game", {
+          firstMove: false,
+          playerSymbol: "o",
+        } as StartConfig)
       }
     }
   })

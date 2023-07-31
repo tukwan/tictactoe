@@ -7,8 +7,8 @@ import { checkWinning } from "../lib/winner"
 import type { GameState, PlayerSymbol } from "../lib/types"
 import { Board, BoardRow, BoardCell } from "./board"
 
-export function Game() {
-  const [isGameStarted, setGameStarted] = useState(false)
+export function Game({ isGameStarted, setGameStarted }) {
+  // const [isGameStarted, setGameStarted] = useState(false)
   const [endGameMsg, setEndGameMsg] = useState("")
   const [playerSymbol, setPlayerSymbol] = useState<PlayerSymbol>(null)
   const [isPlayerTurn, setPlayerTurn] = useState(false)
@@ -38,7 +38,7 @@ export function Game() {
     return () => {
       gameService.disconnect()
     }
-  }, [])
+  }, [setGameStarted])
 
   if (isPlayerTurn) toast.success(`Your turn!`)
 
@@ -68,7 +68,7 @@ export function Game() {
     setPlayerTurn(false)
   }
 
-  if (!isGameStarted) return <GameLoading />
+  if (!isGameStarted) return null
 
   return (
     <>
@@ -95,15 +95,6 @@ export function Game() {
     </>
   )
 }
-
-const GameLoading = () => (
-  <>
-    <div className="w-10 h-10 m-4 border-t-4 border-indigo-600 border-solid rounded-full animate-spin"></div>
-    <p className="text-md leading-8 text-gray-500 animate-pulse">
-      Waiting for second player to join...
-    </p>
-  </>
-)
 
 const GameInfo = ({
   playerSymbol,
