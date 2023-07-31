@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { toast } from "react-toastify"
 
 import gameService from "../services/game-service"
 import socketService from "../services/socket-service"
@@ -36,6 +37,8 @@ export function Game() {
     })
   }, [])
 
+  if (isPlayerTurn) toast.success(`Your turn!`)
+
   const updateGameMatrix = (column: number, row: number) => {
     if (!isPlayerTurn) return
 
@@ -52,60 +55,40 @@ export function Game() {
     )
 
     if (currentPlayerWon && otherPlayerWon) {
-      gameService.win(socketService.socket, "Is a TIE!!")
-      setEndGameMsg("Is a TIE!")
+      gameService.win(socketService.socket, "Is a TIE! 🤝")
+      setEndGameMsg("Is a TIE! 🤝")
     } else if (currentPlayerWon && !otherPlayerWon) {
-      gameService.win(socketService.socket, "You Lost!")
-      setEndGameMsg("You Won!")
+      gameService.win(socketService.socket, "You Lost! 😿")
+      setEndGameMsg("You Won! 🥳")
     }
 
     setPlayerTurn(false)
   }
 
+  if (!isGameStarted) return <GameLoading />
+
   return (
     <>
-      {isGameStarted ? (
-        <>
-          <div className="mt-2 mb-3">
-            <div className="text-md font-normal text-indigo-600">
-              You:{" "}
-              <span className="uppercase font-bold text-2xl">
-                {playerSymbol}
-              </span>
-            </div>
-            <div className="text-lg font-bold animate-pulse">
-              {endGameMsg ? (
-                <span className="text-indigo-600  text-3xl">{endGameMsg}</span>
-              ) : (
-                <span
-                  className={isPlayerTurn ? "text-green-600" : "text-red-600"}
-                >
-                  {isPlayerTurn ? "Your turn..." : "Other player turn..."}
-                </span>
-              )}
-            </div>
-          </div>
-          <Board>
-            {matrix.map((row, rowIndex) => (
-              <BoardRow key={rowIndex}>
-                {row.map((symbol: PlayerSymbol, cellIndex) => (
-                  <BoardCell
-                    key={cellIndex}
-                    onClick={() => updateGameMatrix(rowIndex, cellIndex)}
-                    className={cn(
-                      !isPlayerTurn && "cursor-not-allowed opacity-50"
-                    )}
-                  >
-                    {symbol}
-                  </BoardCell>
-                ))}
-              </BoardRow>
+      <GameInfo
+        playerSymbol={playerSymbol}
+        isPlayerTurn={isPlayerTurn}
+        endGameMsg={endGameMsg}
+      />
+      <Board>
+        {matrix.map((row, rowIndex) => (
+          <BoardRow key={rowIndex}>
+            {row.map((symbol: PlayerSymbol, cellIndex) => (
+              <BoardCell
+                key={cellIndex}
+                onClick={() => updateGameMatrix(rowIndex, cellIndex)}
+                className={cn(!isPlayerTurn && "cursor-not-allowed opacity-50")}
+              >
+                {symbol}
+              </BoardCell>
             ))}
-          </Board>
-        </>
-      ) : (
-        <GameLoading />
-      )}
+          </BoardRow>
+        ))}
+      </Board>
     </>
   )
 }
@@ -117,4 +100,29 @@ const GameLoading = () => (
       Waiting for second player to join...
     </p>
   </>
+)
+
+const GameInfo = ({
+  playerSymbol,
+  isPlayerTurn,
+  endGameMsg,
+}: {
+  playerSymbol: PlayerSymbol
+  isPlayerTurn: boolean
+  endGameMsg: string
+}) => (
+  <div className="mt-2 mb-3">
+    <div className="text-md font-normal text-indigo-600">
+      You: <span className="uppercase font-bold text-2xl">{playerSymbol}</span>
+    </div>
+    <div className="text-lg font-bold animate-pulse">
+      {endGameMsg ? (
+        <span className="text-indigo-600  text-3xl">{endGameMsg}</span>
+      ) : (
+        <span className={isPlayerTurn ? "text-green-600" : "text-red-600"}>
+          {isPlayerTurn ? "Your turn... ⏳" : "Other player turn... ⏳"}
+        </span>
+      )}
+    </div>
+  </div>
 )

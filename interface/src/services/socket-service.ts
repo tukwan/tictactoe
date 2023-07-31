@@ -1,5 +1,6 @@
 import { io, Socket } from "socket.io-client"
 import { DefaultEventsMap } from "@socket.io/component-emitter"
+import { toast } from "react-toastify"
 
 class SocketService {
   public socket: Socket | null = null
@@ -17,7 +18,7 @@ class SocketService {
       })
 
       this.socket.on("connect_error", (err) => {
-        console.log("Connection error: ", err)
+        toast.error("Websocket connection error.")
         rj(err)
       })
     })

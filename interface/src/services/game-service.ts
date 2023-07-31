@@ -1,4 +1,5 @@
 import { Socket } from "socket.io-client"
+import { toast } from "react-toastify"
 
 import { Matrix, StartConfig } from "../lib/types"
 
@@ -7,8 +8,15 @@ class GameService {
     return new Promise((rs, rj) => {
       socket.emit("room_join", roomId)
 
-      socket.on("room_joined", () => rs(true))
-      socket.on("room_error", (error) => rj(error))
+      socket.on("room_joined", () => {
+        toast.success(`You joined Room: ${roomId}`)
+        return rs(true)
+      })
+      socket.on("room_error", (error) => {
+        toast.error(`Error joining a Room: ${roomId}`)
+        toast.error(`${error}`)
+        rj(error)
+      })
     })
   }
 
