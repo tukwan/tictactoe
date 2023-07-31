@@ -1,6 +1,5 @@
 import { useState } from "react"
 
-import socketService from "../services/socket-service"
 import gameService from "../services/game-service"
 
 interface RoomProps {
@@ -18,11 +17,10 @@ export function Room({ setIsPlayer }: RoomProps) {
   const joinRoom = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const socket = socketService.socket
-    if (!roomId || roomId.trim() === "" || !socket) return
+    if (!roomId || roomId.trim() === "") return
 
     try {
-      const joined = await gameService.joinRoom(socket, roomId)
+      const joined = await gameService.joinRoom(roomId)
       if (joined) setIsPlayer(true)
     } catch (error) {
       console.log("Error gameService:", error)

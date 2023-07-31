@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 
 import gameService from "../services/game-service"
-import socketService from "../services/socket-service"
 import { cn } from "../lib/utils"
 import { checkWinning } from "../lib/winner"
 import type { Matrix, PlayerSymbol } from "../lib/types"
@@ -20,21 +19,25 @@ export function Game() {
   ])
 
   useEffect(() => {
-    gameService.start(socketService.socket, (startConfig) => {
+    gameService.start((startConfig) => {
       setGameStarted(true)
       setPlayerSymbol(startConfig.playerSymbol)
       setPlayerTurn(startConfig.firstMove)
     })
 
-    gameService.onReceivedUpdate(socketService.socket, (newMatrix) => {
+    gameService.onReceivedUpdate((newMatrix) => {
       setMatrix(newMatrix)
       setPlayerTurn(true)
     })
 
-    gameService.onReceivedWin(socketService.socket, (msg: string) => {
+    gameService.onReceivedWin((msg: string) => {
       setPlayerTurn(false)
       setEndGameMsg(msg)
     })
+
+    return () => {
+      gameService.disconnect()
+    }
   }, [])
 
   if (isPlayerTurn) toast.success(`Your turn!`)
@@ -47,7 +50,7 @@ export function Game() {
     const newMatrix = [...matrix]
     newMatrix[column][row] = playerSymbol
     setMatrix(newMatrix)
-    gameService.update(socketService.socket, newMatrix)
+    gameService.update(newMatrix)
 
     const [currentPlayerWon, otherPlayerWon] = checkWinning(
       newMatrix,
@@ -55,10 +58,10 @@ export function Game() {
     )
 
     if (currentPlayerWon && otherPlayerWon) {
-      gameService.win(socketService.socket, "Is a TIE! 🤝")
+      gameService.win("Is a TIE! 🤝")
       setEndGameMsg("Is a TIE! 🤝")
     } else if (currentPlayerWon && !otherPlayerWon) {
-      gameService.win(socketService.socket, "You Lost! 😿")
+      gameService.win("You Lost! 😿")
       setEndGameMsg("You Won! 🥳")
     }
 

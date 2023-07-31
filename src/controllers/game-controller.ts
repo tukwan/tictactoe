@@ -3,12 +3,12 @@ import { Socket } from "socket.io"
 import { io } from "../app"
 
 export function GameController(socket: Socket) {
+  const getSocketRooms = (): string[] =>
+    Array.from(socket.rooms.values()).filter((roomId) => roomId !== socket.id)
+
   socket.on("room_join", (roomId: string) => {
     const connectedSockets = io.sockets.adapter.rooms.get(roomId)
-
-    const socketRooms = Array.from(socket.rooms.values()).filter(
-      (roomId) => roomId !== socket.id
-    )
+    const socketRooms = getSocketRooms()
 
     if (
       socketRooms.length > 0 ||
@@ -29,18 +29,12 @@ export function GameController(socket: Socket) {
   })
 
   socket.on("update_game", (matrix: string) => {
-    const socketRooms = Array.from(socket.rooms.values()).filter(
-      (roomId) => roomId !== socket.id
-    )
-
+    const socketRooms = getSocketRooms()
     socket.to(socketRooms[0]).emit("on_received_update_game", matrix)
   })
 
   socket.on("win_game", (msg: string) => {
-    const socketRooms = Array.from(socket.rooms.values()).filter(
-      (roomId) => roomId !== socket.id
-    )
-
+    const socketRooms = getSocketRooms()
     socket.to(socketRooms[0]).emit("on_received_win_game", msg)
   })
 }
