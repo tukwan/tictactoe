@@ -1,5 +1,5 @@
 export const Layout = ({ children }) => (
-  <div className="mx-auto mt-16 text-center">
+  <div className="mx-auto mt-8 sm:mt-16 text-center">
     <p className="text-base font-semibold leading-7 text-indigo-600 ">
       Multiplayer game
     </p>

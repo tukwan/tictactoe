@@ -1,21 +1,28 @@
-import { render, fireEvent } from "@testing-library/react"
+import { render, fireEvent, waitFor, cleanup } from "@testing-library/react"
 import { vi, expect, Mock } from "vitest"
 import { act } from "react-dom/test-utils"
+import { toast } from "react-toastify"
 import matchers from "@testing-library/jest-dom/matchers"
 
 import { Room } from "./room"
 import gameService from "../services/game-service"
-import socketService from "../services/socket-service"
 
 expect.extend(matchers)
 
-const mockSetIsPlayer = vi.fn()
+vi.mock("react-toastify", () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+}))
 
 describe("Room", () => {
   beforeEach(() => {
-    socketService.socket = "socket" as any
     gameService.joinRoom = vi.fn()
+    vi.clearAllMocks()
   })
+
+  afterEach(cleanup)
 
   it("renders correctly", () => {
     const { getByPlaceholderText, getByText } = render(<Room />)
@@ -45,11 +52,32 @@ describe("Room", () => {
       fireEvent.click(getByText("Join"))
     })
 
-    expect(gameService.joinRoom).toHaveBeenCalled()
-    expect(mockSetIsPlayer).toHaveBeenCalledWith(true)
+    await waitFor(() => {
+      expect(gameService.joinRoom).toHaveBeenCalledWith("room-id-1")
+      expect(toast.success).toHaveBeenCalledWith("You joined Room: room-id-1")
+    })
   })
 
   it("should handle joinRoom error", async () => {
-    // TODO:
+    const error = new Error("Network error")
+    ;(gameService.joinRoom as Mock).mockRejectedValueOnce(error)
+
+    const { getByText, getByPlaceholderText } = render(<Room />)
+
+    fireEvent.change(getByPlaceholderText("Room id..."), {
+      target: { value: "room-id-1" },
+    })
+
+    await act(async () => {
+      fireEvent.click(getByText("Join"))
+    })
+
+    await waitFor(() => {
+      expect(gameService.joinRoom).toHaveBeenCalledWith("room-id-1")
+      expect(toast.error).toHaveBeenCalledWith(
+        `Error joining a Room: room-id-1`
+      )
+      expect(toast.error).toHaveBeenCalledWith(`${error}`)
+    })
   })
 })
